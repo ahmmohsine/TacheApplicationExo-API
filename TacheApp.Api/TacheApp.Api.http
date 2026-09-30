@@ -1,0 +1,38 @@
+@TacheApp.Api_HostAddress = https://localhost:7276
+
+GET {{TacheApp.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{TacheApp.Api_HostAddress}}/api/tache
+
+###
+
+POST {{TacheApp.Api_HostAddress}}/api/tache
+Content-Type: application/json
+ {
+    "titre": "Réviser ASP MVC"
+  }
+
+###
+
+@id=2
+
+###
+
+DELETE {{TacheApp.Api_HostAddress}}/api/tache/{{id}}
+
+###
+
+GET {{TacheApp.Api_HostAddress}}/api/Tache/{{id}}
+
+###
+
+PUT {{TacheApp.Api_HostAddress}}/api/tache/{{id}}
+Content-Type: application/json
+{
+    "titre": "Faire CV"
+  }
+
+###

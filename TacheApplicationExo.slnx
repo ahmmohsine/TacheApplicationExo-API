@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="TacheApp.Api/TacheApp.Api.csproj" />
+  <Project Path="TacheApp.Application/TacheApp.Application.csproj" />
+  <Project Path="TacheApp.Domain/TacheApp.Domain.csproj" />
+  <Project Path="TacheApp.Infrastructure/TacheApp.Infrastructure.csproj" />
+</Solution>
