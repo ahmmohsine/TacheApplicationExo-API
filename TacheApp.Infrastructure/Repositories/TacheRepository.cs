@@ -23,7 +23,7 @@ namespace TacheApp.Infrastructure.Repositories
             var entity = await _context.Taches.FindAsync(new object[] { id }, ct);
             if (entity == null) return false;
 
-            entity.Realisee = true;
+            entity.Cloturer();
 
             return await _context.SaveChangesAsync(ct) > 0;
         }

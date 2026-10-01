@@ -1,10 +1,13 @@
-﻿using TacheApp.Application.DTOs;
+﻿using TacheApp.Application.Common.Interfaces;
+using TacheApp.Application.DTOs;
+using TacheApp.Domain.Common;
+using TacheApp.Domain.Common.Errors;
 using TacheApp.Domain.Entities;
 using TacheApp.Domain.Interfaces;
 
 namespace TacheApp.Application.Commands.CreateTache
 {
-    public class CreateTacheCommandHandler
+    public class CreateTacheCommandHandler : ICommandHandler<CreateTacheCommand, Result<TacheDto>>
     {
         private readonly ITacheRepository _repository;
 
@@ -14,16 +17,17 @@ namespace TacheApp.Application.Commands.CreateTache
         }
 
 
-        public async Task<TacheDto> HandleAsync(CreateTacheCommand command, CancellationToken ct = default)
+        public async Task<Result<TacheDto>> HandleAsync(CreateTacheCommand command, CancellationToken ct = default)
         {
-            var entity = new Tache
+            if (string.IsNullOrWhiteSpace(command.titre))
             {
-                Titre = command.titre
-            };
+                return Result<TacheDto>.Failure(DomainErrors.Tache.TitleRequired);
+            }
+            var entity = new Tache(command.titre);
 
             _repository.Add(entity);
             await _repository.SaveChangesAsync(ct);
-            return new TacheDto(entity.Id, entity.Titre, entity.DateCreation, entity.Realisee);
+            return Result.Success(new TacheDto(entity.Id, entity.Titre, entity.DateCreation, entity.Realisee));
         }
     }
 }

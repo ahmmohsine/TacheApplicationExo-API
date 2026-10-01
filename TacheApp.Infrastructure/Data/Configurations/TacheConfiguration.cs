@@ -23,37 +23,12 @@ namespace TacheApp.Infrastructure.Data.Configurations
             builder.Property(t => t.Realisee)
                    .HasColumnType("bit")
                    .HasDefaultValue(false);
-
             builder.HasData(
-            new Tache
-            {
-                Id = 1,
-                Titre = "Mettre en place la Clean Architecture",
-                DateCreation = new DateTime(2026, 9, 28, 10, 0, 0),
-                Realisee = true
-            },
-            new Tache
-            {
-                Id = 2,
-                Titre = "Implémenter la configuration Fluent API pour Tache",
-                DateCreation = new DateTime(2026, 9, 29, 14, 30, 0),
-                Realisee = true
-            },
-            new Tache
-            {
-                Id = 3,
-                Titre = "Tester l'endpoint PATCH /tache/cloture/{id}",
-                DateCreation = new DateTime(2026, 9, 30, 8, 15, 0),
-                Realisee = false
-            },
-            new Tache
-            {
-                Id = 4,
-                Titre = "Rédiger la documentation Swagger",
-                DateCreation = new DateTime(2026, 9, 30, 9, 0, 0),
-                Realisee = false
-            }
-        );
+            new Tache(1, "Mettre en place la Clean Architecture", new DateTime(2026, 9, 28, 10, 0, 0), true),
+            new Tache(2, "Implémenter la configuration Fluent API pour Tache", new DateTime(2026, 9, 29, 14, 30, 0), true),
+            new Tache(3, "Tester l'endpoint PATCH /tache/cloture/{id}", new DateTime(2026, 9, 30, 8, 15, 0), false),
+            new Tache(4, "Rédiger la documentation Swagger", new DateTime(2026, 9, 30, 9, 0, 0), false)
+);
         }
     }
 }

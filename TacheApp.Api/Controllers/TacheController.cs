@@ -12,26 +12,39 @@ namespace TacheApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TacheController : ControllerBase
+    public class TacheController : ApiControllerBase
     {
         // GET: api/<TacheController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TacheDto>>> Get([FromServices] GetAllTachesQueryHandler handler, CancellationToken ct)
         {
             var result = await handler.HandleAsync(new GetAllTachesQuery(), ct);
-            return Ok(result);
+            if (result.IsFailure)
+            {
+                return HandleFailure(result);
+            }
+
+            return Ok(result.Value);
         }
 
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<TacheDto>> GetById(
-        int id, [FromServices] GetTacheByIdQueryHandler handler, CancellationToken ct)
+        int id,
+        [FromServices] GetTacheByIdQueryHandler handler,
+        CancellationToken ct)
         {
-            var result = await handler.HandleAsync(new GetTacheByIdQuery(id), ct);
-            if (result == null) return NotFound();
+            var query = new GetTacheByIdQuery(id);
+            var result = await handler.HandleAsync(query, ct);
 
-            return Ok(result);
+            if (result.IsFailure)
+            {
+                return HandleFailure(result);
+            }
+
+            return Ok(result.Value);
         }
+
 
 
         [HttpPost]
@@ -40,7 +53,12 @@ namespace TacheApp.Api.Controllers
          [FromServices] CreateTacheCommandHandler handler, CancellationToken ct)
         {
             var result = await handler.HandleAsync(new CreateTacheCommand(input.Titre), ct);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            if (result.IsFailure)
+            {
+                return HandleFailure(result);
+            }
+            return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
+
         }
 
         [HttpPut("{id}")]
@@ -49,7 +67,7 @@ namespace TacheApp.Api.Controllers
             [FromServices] UpdateTacheCommandHandler handler, CancellationToken token)
         {
             var result = (await handler.HandleAsync(new UpdateTacheCommand(id, input.Titre, input.Realisee), token));
-            if (result) return Ok();
+            if (result.IsSuccess) return Ok(result);
             return NotFound();
 
         }
@@ -57,10 +75,9 @@ namespace TacheApp.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id, [FromServices] DeleteTacheCommandHandler handler, CancellationToken token)
         {
-            bool success = await handler.HandleAsync(new DeleteTacheCommand(id), token);
-            if (!success) return NotFound();
-            return Ok();
-
+            var result = await handler.HandleAsync(new DeleteTacheCommand(id), token);
+            if (result.IsFailure) return HandleFailure(result);
+            return Ok(result.Value);
         }
     }
 }
